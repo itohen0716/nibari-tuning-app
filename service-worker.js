@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#795548">
+
+  <title>二上り調弦練習</title>
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+  <main class="app">
+    <header class="app-header">
+      <img
+        class="app-icon"
+        src="./icons/icon-192.png"
+        alt=""
+        width="72"
+        height="72"
+      >
+      <div>
+        <h1>二上り調弦練習</h1>
+        <p>基準音を聴いて、三味線の音を合わせます。</p>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="setting-title">
+      <h2 id="setting-title">本数設定</h2>
+
+      <label for="hon">一の糸の本数</label>
+      <select id="hon">
+        <option value="1">1本</option>
+        <option value="2">2本</option>
+        <option value="3">3本</option>
+        <option value="4">4本</option>
+        <option value="5">5本</option>
+        <option value="6" selected>6本</option>
+        <option value="7">7本</option>
+        <option value="8">8本</option>
+        <option value="9">9本</option>
+        <option value="10">10本</option>
+        <option value="11">11本</option>
+        <option value="12">12本</option>
+      </select>
+
+      <div class="info" id="tuningInfo" aria-live="polite"></div>
+    </section>
+
+    <section class="card" aria-labelledby="sound-title">
+      <h2 id="sound-title">基準音</h2>
+
+      <div class="button-grid">
+        <button type="button" data-note="ichi">
+          <span>一の糸</span>
+          <small id="ichiFrequency"></small>
+        </button>
+
+        <button type="button" data-note="ni">
+          <span>二の糸</span>
+          <small id="niFrequency"></small>
+        </button>
+
+        <button type="button" data-note="san">
+          <span>三の糸</span>
+          <small id="sanFrequency"></small>
+        </button>
+      </div>
+
+      <button type="button" class="secondary-button" id="playAllButton">
+        一・二・三を連続再生
+      </button>
+
+      <p class="status" id="audioStatus" role="status" aria-live="polite">
+        糸のボタンを押すと音が鳴ります。
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="guide-title">
+      <h2 id="guide-title">練習手順</h2>
+      <ol>
+        <li>一の糸を基準音に合わせる</li>
+        <li>二の糸を一の糸の完全5度上に合わせる</li>
+        <li>三の糸を一の糸の1オクターブ上に合わせる</li>
+        <li>最後に3本を順番に鳴らして確認する</li>
+      </ol>
+    </section>
+
+    <button type="button" class="install-button" id="installButton" hidden>
+      ホーム画面にインストール
+    </button>
+
+    <p class="version">PWA Ver.1.0</p>
+  </main>
+
+  <script src="./js/app.js" defer></script>
+</body>
+</html>
