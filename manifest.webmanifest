@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "二上り調弦練習",
-  "short_name": "二上り調弦",
-  "description": "三味線の二上り調弦を耳で練習するPWAです。",
+  "name": "絲庵 ─ Shamisen ─",
+  "short_name": "絲庵",
+  "description": "三味線の調弦と練習を支えるPWAです。",
   "lang": "ja",
   "start_url": "./",
   "scope": "./",

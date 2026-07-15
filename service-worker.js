@@ -1,13 +1,17 @@
 'use strict';
 
-const CACHE_NAME = 'nibari-pwa-v1.0.1';
+const CACHE_NAME = 'shian-shamisen-v1.2.0';
 
 const APP_FILES = [
   './',
   './index.html',
+  './tuning.html',
   './style.css',
   './app.js',
   './manifest.webmanifest',
+  './hon.png',
+  './niage.png',
+  './sansage.png',
   './icon-192.png',
   './icon-512.png',
   './icon-512-maskable.png'

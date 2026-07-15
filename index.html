@@ -2,12 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#795548">
 
   <title>絲庵 ─ Shamisen ─</title>
@@ -19,20 +14,18 @@
 </head>
 
 <body class="home-body">
-
   <main class="home-app">
-
     <header class="home-header">
       <img
         class="home-character"
         src="./icon-512.png"
-        alt="三味線を弾く黒猫のシャミ"
-        width="180"
-        height="180"
+        alt="三味線を持つ黒猫のシャミ"
+        width="168"
+        height="168"
       >
 
       <p class="brand-name">絲庵</p>
-      <h1 class="app-name">─ Shamisen ─</h1>
+      <h1 class="home-title">─ Shamisen ─</h1>
 
       <p class="home-message">
         シャミと一緒に、今日の練習を始めましょう。
@@ -40,30 +33,27 @@
     </header>
 
     <nav class="home-menu" aria-label="練習メニュー">
-
       <a class="menu-button active-menu" href="./tuning.html">
         <span class="menu-icon">♪</span>
 
         <span class="menu-text">
-          <strong>調弦する</strong>
+          <strong>調弦</strong>
           <small>本調子・二上り・三下り</small>
         </span>
 
-        <span class="menu-arrow">›</span>
+        <span class="menu-arrow" aria-hidden="true">›</span>
       </a>
 
       <button class="menu-button disabled-menu" type="button" disabled>
         <span class="menu-icon">♬</span>
-
         <span class="menu-text">
-          <strong>チューナー</strong>
+          <strong>耳を育てる</strong>
           <small>準備中</small>
         </span>
       </button>
 
       <button class="menu-button disabled-menu" type="button" disabled>
         <span class="menu-icon">♩</span>
-
         <span class="menu-text">
           <strong>メトロノーム</strong>
           <small>準備中</small>
@@ -72,7 +62,6 @@
 
       <button class="menu-button disabled-menu" type="button" disabled>
         <span class="menu-icon">●</span>
-
         <span class="menu-text">
           <strong>録音・再生</strong>
           <small>準備中</small>
@@ -80,31 +69,24 @@
       </button>
 
       <button class="menu-button disabled-menu" type="button" disabled>
-        <span class="menu-icon">?</span>
-
-        <span class="menu-text">
-          <strong>耳の練習</strong>
-          <small>準備中</small>
-        </span>
-      </button>
-
-      <button class="menu-button disabled-menu" type="button" disabled>
         <span class="menu-icon">✎</span>
-
         <span class="menu-text">
           <strong>練習記録</strong>
           <small>準備中</small>
         </span>
       </button>
-
     </nav>
+
+    <button type="button" class="install-button" id="installButton" hidden>
+      ホーム画面にインストール
+    </button>
 
     <footer class="home-footer">
       <p>絲庵 ─ Shamisen ─</p>
-      <p>Ver.1.1</p>
+      <p>Ver.1.2</p>
     </footer>
-
   </main>
 
+  <script src="./app.js" defer></script>
 </body>
 </html>

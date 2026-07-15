@@ -36,6 +36,15 @@ button {
     max(24px, env(safe-area-inset-bottom));
 }
 
+.back-link {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: #795548;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .app-header {
   display: flex;
   align-items: center;
@@ -102,6 +111,59 @@ select {
   line-height: 1.75;
 }
 
+.tuning-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tuning-mode-button {
+  min-width: 0;
+  min-height: auto;
+  padding: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: #f3eee9;
+  color: #342a25;
+  filter: grayscale(100%);
+  opacity: 0.62;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tuning-mode-button img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 11px;
+}
+
+.tuning-mode-button span {
+  display: block;
+  margin-top: 7px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tuning-mode-button.active {
+  border-color: #795548;
+  filter: grayscale(0%);
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(121, 85, 72, 0.22);
+  transform: translateY(-2px);
+}
+
+.tuning-mode-button:focus-visible {
+  outline: 3px solid rgba(121, 85, 72, 0.28);
+  outline-offset: 2px;
+}
+
 .button-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -145,7 +207,7 @@ button small {
 }
 
 .install-button {
-  margin: 0 0 16px;
+  margin: 18px 0 16px;
   background: #2f6f52;
 }
 
@@ -157,10 +219,13 @@ button small {
   text-align: center;
 }
 
-ol {
-  margin: 0;
-  padding-left: 1.5em;
+.guide-text {
+  color: #554b46;
   line-height: 1.8;
+}
+
+.guide-text p {
+  margin: 0 0 8px;
 }
 
 .version {
@@ -170,28 +235,11 @@ ol {
   text-align: center;
 }
 
-@media (max-width: 370px) {
-  .button-grid {
-    grid-template-columns: 1fr;
-  }
-
-  button {
-    min-height: 58px;
-  }
-}
-
-/* ========================================
-   絲庵 ─ Shamisen ─ ホーム画面
-======================================== */
+/* ホーム画面 */
 
 .home-body {
   min-height: 100vh;
-  background:
-    linear-gradient(
-      180deg,
-      #fffaf0 0%,
-      #f6f0e7 100%
-    );
+  background: linear-gradient(180deg, #fffaf0 0%, #f6f0e7 100%);
 }
 
 .home-app {
@@ -227,7 +275,7 @@ ol {
   text-indent: 0.18em;
 }
 
-.app-name {
+.home-title {
   margin: 4px 0 0;
   color: #795548;
   font-family: Georgia, serif;
@@ -328,4 +376,26 @@ ol {
 
 .home-footer p {
   margin: 0;
+}
+
+@media (max-width: 370px) {
+  .tuning-mode-grid {
+    gap: 6px;
+  }
+
+  .tuning-mode-button {
+    padding: 5px;
+  }
+
+  .tuning-mode-button span {
+    font-size: 12px;
+  }
+
+  .button-grid {
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    min-height: 58px;
+  }
 }

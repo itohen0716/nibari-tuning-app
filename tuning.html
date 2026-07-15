@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#795548">
 
-  <title>調弦</title>
+  <title>調弦｜絲庵 ─ Shamisen ─</title>
 
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon-192.png" sizes="192x192">
@@ -15,6 +15,8 @@
 
 <body>
   <main class="app">
+    <a class="back-link" href="./index.html">‹ ホームへ戻る</a>
+
     <header class="app-header">
       <img
         class="app-icon"
@@ -23,11 +25,48 @@
         width="72"
         height="72"
       >
+
       <div>
         <h1>調弦</h1>
         <p>基準音を聴いて、三味線の音を合わせます。</p>
       </div>
     </header>
+
+    <section class="card" aria-labelledby="mode-title">
+      <h2 id="mode-title">調弦を選ぶ</h2>
+
+      <div class="tuning-mode-grid" role="group" aria-label="調弦の種類">
+        <button
+          type="button"
+          class="tuning-mode-button active"
+          data-mode="hon"
+          aria-pressed="true"
+        >
+          <img src="./hon.png" alt="本調子の札を持つシャミ">
+          <span>本調子</span>
+        </button>
+
+        <button
+          type="button"
+          class="tuning-mode-button"
+          data-mode="niage"
+          aria-pressed="false"
+        >
+          <img src="./niage.png" alt="二上りの札を持つシャミ">
+          <span>二上り</span>
+        </button>
+
+        <button
+          type="button"
+          class="tuning-mode-button"
+          data-mode="sansage"
+          aria-pressed="false"
+        >
+          <img src="./sansage.png" alt="三下りの札を持つシャミ">
+          <span>三下り</span>
+        </button>
+      </div>
+    </section>
 
     <section class="card" aria-labelledby="setting-title">
       <h2 id="setting-title">本数設定</h2>
@@ -81,20 +120,11 @@
     </section>
 
     <section class="card" aria-labelledby="guide-title">
-      <h2 id="guide-title">練習手順</h2>
-      <ol>
-        <li>一の糸を基準音に合わせる</li>
-        <li>二の糸を一の糸の完全5度上に合わせる</li>
-        <li>三の糸を一の糸の1オクターブ上に合わせる</li>
-        <li>最後に3本を順番に鳴らして確認する</li>
-      </ol>
+      <h2 id="guide-title">音の関係</h2>
+      <div id="tuningGuide" class="guide-text"></div>
     </section>
 
-    <button type="button" class="install-button" id="installButton" hidden>
-      ホーム画面にインストール
-    </button>
-
-    <p class="version">PWA Ver.1.0</p>
+    <p class="version">調弦 Ver.1.2</p>
   </main>
 
   <script src="./app.js" defer></script>

@@ -18,17 +18,52 @@ const BASE_NOTES = Object.freeze({
   12: 92.50
 });
 
+const TUNING_MODES = Object.freeze({
+  hon: {
+    label: '本調子',
+    ratios: {
+      ichi: 1,
+      ni: 4 / 3,
+      san: 2
+    },
+    guide:
+      '一の糸を基準に、二の糸を完全4度上、三の糸を1オクターブ上に合わせます。'
+  },
+  niage: {
+    label: '二上り',
+    ratios: {
+      ichi: 1,
+      ni: 3 / 2,
+      san: 2
+    },
+    guide:
+      '一の糸を基準に、二の糸を完全5度上、三の糸を1オクターブ上に合わせます。'
+  },
+  sansage: {
+    label: '三下り',
+    ratios: {
+      ichi: 1,
+      ni: 4 / 3,
+      san: 16 / 9
+    },
+    guide:
+      '一の糸を基準に、二の糸を完全4度上、三の糸を短7度上に合わせます。'
+  }
+});
+
 let audioContext = null;
 let deferredInstallPrompt = null;
+let currentMode = 'hon';
 let currentNotes = {
   ichi: 130.81,
-  ni: 196.22,
+  ni: 174.41,
   san: 261.62
 };
 
 const elements = {
   hon: document.getElementById('hon'),
   tuningInfo: document.getElementById('tuningInfo'),
+  tuningGuide: document.getElementById('tuningGuide'),
   ichiFrequency: document.getElementById('ichiFrequency'),
   niFrequency: document.getElementById('niFrequency'),
   sanFrequency: document.getElementById('sanFrequency'),
@@ -38,44 +73,103 @@ const elements = {
 };
 
 function setStatus(message) {
-  elements.audioStatus.textContent = message;
+  if (elements.audioStatus) {
+    elements.audioStatus.textContent = message;
+  }
+}
+
+function updateModeButtons() {
+  document
+    .querySelectorAll('[data-mode]')
+    .forEach((button) => {
+      const isActive = button.dataset.mode === currentMode;
+
+      button.classList.toggle('active', isActive);
+      button.setAttribute(
+        'aria-pressed',
+        isActive ? 'true' : 'false'
+      );
+    });
 }
 
 function updateTuning() {
+  if (!elements.hon || !elements.tuningInfo) {
+    return;
+  }
+
   const hon = Number(elements.hon.value);
   const ichi = BASE_NOTES[hon];
+  const mode = TUNING_MODES[currentMode];
 
-  if (!Number.isFinite(ichi)) {
+  if (!Number.isFinite(ichi) || !mode) {
     elements.tuningInfo.textContent =
-      '本数設定を読み込めませんでした。';
+      '調弦設定を読み込めませんでした。';
     return;
   }
 
   currentNotes = {
-    ichi,
-    ni: ichi * 1.5,
-    san: ichi * 2
+    ichi: ichi * mode.ratios.ichi,
+    ni: ichi * mode.ratios.ni,
+    san: ichi * mode.ratios.san
   };
 
   elements.tuningInfo.innerHTML =
-    `<strong>${hon}本・二上り</strong><br>` +
+    `<strong>${hon}本・${mode.label}</strong><br>` +
     `一の糸：${currentNotes.ichi.toFixed(2)} Hz<br>` +
     `二の糸：${currentNotes.ni.toFixed(2)} Hz<br>` +
     `三の糸：${currentNotes.san.toFixed(2)} Hz`;
 
-  elements.ichiFrequency.textContent =
-    `${currentNotes.ichi.toFixed(2)} Hz`;
-  elements.niFrequency.textContent =
-    `${currentNotes.ni.toFixed(2)} Hz`;
-  elements.sanFrequency.textContent =
-    `${currentNotes.san.toFixed(2)} Hz`;
+  if (elements.ichiFrequency) {
+    elements.ichiFrequency.textContent =
+      `${currentNotes.ichi.toFixed(2)} Hz`;
+  }
 
-  localStorage.setItem('nibari-hon', String(hon));
+  if (elements.niFrequency) {
+    elements.niFrequency.textContent =
+      `${currentNotes.ni.toFixed(2)} Hz`;
+  }
+
+  if (elements.sanFrequency) {
+    elements.sanFrequency.textContent =
+      `${currentNotes.san.toFixed(2)} Hz`;
+  }
+
+  if (elements.tuningGuide) {
+    elements.tuningGuide.innerHTML =
+      `<p><strong>${mode.label}</strong></p>` +
+      `<p>${mode.guide}</p>`;
+  }
+
+  localStorage.setItem(
+    'shian-shamisen-hon',
+    String(hon)
+  );
+
+  localStorage.setItem(
+    'shian-shamisen-mode',
+    currentMode
+  );
+}
+
+function selectTuningMode(modeName) {
+  if (!Object.hasOwn(TUNING_MODES, modeName)) {
+    return;
+  }
+
+  currentMode = modeName;
+  updateModeButtons();
+  updateTuning();
+
+  setStatus(
+    `${TUNING_MODES[currentMode].label}を選びました。`
+  );
 }
 
 async function ensureAudioContext() {
   if (!AudioContextClass) {
-    throw new Error('このブラウザはWeb Audio APIに対応していません。');
+    throw new Error(
+      'このブラウザはWeb Audio APIに対応していません。'
+    );
   }
 
   if (!audioContext || audioContext.state === 'closed') {
@@ -89,15 +183,27 @@ async function ensureAudioContext() {
   return audioContext;
 }
 
-function createTone(context, frequency, startTime, duration = 1.8) {
+function createTone(
+  context,
+  frequency,
+  startTime,
+  duration = 1.8
+) {
   const oscillator = context.createOscillator();
   const gain = context.createGain();
 
   oscillator.type = 'sine';
-  oscillator.frequency.setValueAtTime(frequency, startTime);
+  oscillator.frequency.setValueAtTime(
+    frequency,
+    startTime
+  );
 
   gain.gain.setValueAtTime(0.0001, startTime);
-  gain.gain.exponentialRampToValueAtTime(0.28, startTime + 0.03);
+  gain.gain.exponentialRampToValueAtTime(
+    0.28,
+    startTime + 0.03
+  );
+
   gain.gain.exponentialRampToValueAtTime(
     0.0001,
     startTime + duration
@@ -119,7 +225,12 @@ async function playNote(noteName) {
     }
 
     const context = await ensureAudioContext();
-    createTone(context, frequency, context.currentTime);
+
+    createTone(
+      context,
+      frequency,
+      context.currentTime
+    );
 
     const labels = {
       ichi: '一の糸',
@@ -132,6 +243,7 @@ async function playNote(noteName) {
     );
   } catch (error) {
     console.error(error);
+
     setStatus(
       `音を再生できません：${error.message}`
     );
@@ -144,13 +256,30 @@ async function playAll() {
     const start = context.currentTime + 0.05;
     const interval = 2.05;
 
-    createTone(context, currentNotes.ichi, start);
-    createTone(context, currentNotes.ni, start + interval);
-    createTone(context, currentNotes.san, start + interval * 2);
+    createTone(
+      context,
+      currentNotes.ichi,
+      start
+    );
 
-    setStatus('一の糸→二の糸→三の糸を連続再生中');
+    createTone(
+      context,
+      currentNotes.ni,
+      start + interval
+    );
+
+    createTone(
+      context,
+      currentNotes.san,
+      start + interval * 2
+    );
+
+    setStatus(
+      `${TUNING_MODES[currentMode].label}の一・二・三の糸を連続再生中`
+    );
   } catch (error) {
     console.error(error);
+
     setStatus(
       `連続再生できません：${error.message}`
     );
@@ -168,23 +297,56 @@ async function registerServiceWorker() {
       { scope: './' }
     );
   } catch (error) {
-    console.error('Service Worker登録失敗:', error);
+    console.error(
+      'Service Worker登録失敗:',
+      error
+    );
   }
 }
 
 function restoreSettings() {
-  const savedHon = localStorage.getItem('nibari-hon');
+  if (!elements.hon) {
+    return;
+  }
 
-  if (savedHon && Object.hasOwn(BASE_NOTES, savedHon)) {
+  const savedHon =
+    localStorage.getItem('shian-shamisen-hon');
+
+  const savedMode =
+    localStorage.getItem('shian-shamisen-mode');
+
+  if (
+    savedHon &&
+    Object.hasOwn(BASE_NOTES, savedHon)
+  ) {
     elements.hon.value = savedHon;
   }
 
+  if (
+    savedMode &&
+    Object.hasOwn(TUNING_MODES, savedMode)
+  ) {
+    currentMode = savedMode;
+  }
+
+  updateModeButtons();
   updateTuning();
 }
 
-function bindEvents() {
-  elements.hon.addEventListener('change', updateTuning);
-  elements.playAllButton.addEventListener('click', playAll);
+function bindTuningEvents() {
+  if (elements.hon) {
+    elements.hon.addEventListener(
+      'change',
+      updateTuning
+    );
+  }
+
+  if (elements.playAllButton) {
+    elements.playAllButton.addEventListener(
+      'click',
+      playAll
+    );
+  }
 
   document
     .querySelectorAll('[data-note]')
@@ -194,33 +356,57 @@ function bindEvents() {
       });
     });
 
-  window.addEventListener('beforeinstallprompt', (event) => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-    elements.installButton.hidden = false;
-  });
+  document
+    .querySelectorAll('[data-mode]')
+    .forEach((button) => {
+      button.addEventListener('click', () => {
+        selectTuningMode(button.dataset.mode);
+      });
+    });
+}
 
-  elements.installButton.addEventListener('click', async () => {
-    if (!deferredInstallPrompt) {
-      return;
+function bindInstallEvents() {
+  if (!elements.installButton) {
+    return;
+  }
+
+  window.addEventListener(
+    'beforeinstallprompt',
+    (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      elements.installButton.hidden = false;
     }
+  );
 
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
+  elements.installButton.addEventListener(
+    'click',
+    async () => {
+      if (!deferredInstallPrompt) {
+        return;
+      }
 
-    deferredInstallPrompt = null;
-    elements.installButton.hidden = true;
-  });
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
 
-  window.addEventListener('appinstalled', () => {
-    deferredInstallPrompt = null;
-    elements.installButton.hidden = true;
-  });
+      deferredInstallPrompt = null;
+      elements.installButton.hidden = true;
+    }
+  );
+
+  window.addEventListener(
+    'appinstalled',
+    () => {
+      deferredInstallPrompt = null;
+      elements.installButton.hidden = true;
+    }
+  );
 }
 
 function initialize() {
+  bindTuningEvents();
+  bindInstallEvents();
   restoreSettings();
-  bindEvents();
   void registerServiceWorker();
 }
 
